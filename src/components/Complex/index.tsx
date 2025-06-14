@@ -39,12 +39,10 @@ export const SampleForm = ({ userId, onError }: UserProfileFormProps) => {
 
         if (isMounted) {
           setUser(fetchedUser);
-          setName(fetchedUser.name);
-          setEmail(fetchedUser.email);
-          setRole(fetchedUser.role);
         }
       } catch (error) {
         if (isMounted) {
+          setUser(null);
           const errorMessage =
             error instanceof Error
               ? error.message
@@ -142,7 +140,7 @@ export const SampleForm = ({ userId, onError }: UserProfileFormProps) => {
       </div>
 
       <div className="user-form-section">
-        <h3>ユーザー情報編集・保存</h3>
+        <h3>ユーザー情報更新</h3>
         <form
           onSubmit={(e) => {
             e.preventDefault();
@@ -150,7 +148,7 @@ export const SampleForm = ({ userId, onError }: UserProfileFormProps) => {
           }}
         >
           <div className="input-group">
-            <label htmlFor="name">名前:</label>
+            <label htmlFor="name">名前</label>
             <input
               id="name"
               type="text"
@@ -162,7 +160,7 @@ export const SampleForm = ({ userId, onError }: UserProfileFormProps) => {
           </div>
 
           <div className="input-group">
-            <label htmlFor="email">メールアドレス:</label>
+            <label htmlFor="email">メールアドレス</label>
             <input
               id="email"
               type="email"
@@ -174,7 +172,7 @@ export const SampleForm = ({ userId, onError }: UserProfileFormProps) => {
           </div>
 
           <div className="input-group">
-            <label htmlFor="role">役割:</label>
+            <label htmlFor="role">役割</label>
             <select
               id="role"
               value={role}
