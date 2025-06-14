@@ -90,24 +90,26 @@ export const SampleForm = ({ userId, onError }: UserProfileFormProps) => {
     >
       <h2>{formTitle}</h2>
 
-      <button
-        onClick={() => {
-          window.scrollTo({
-            top: document.documentElement.scrollHeight,
-            behavior: "smooth",
-          });
-        }}
-        className="scroll-button"
-        aria-label="一番下へスクロール"
-      >
-        ⬇️
-      </button>
+      <p className="scroll-controls">
+        <button
+          onClick={() => {
+            window.scrollTo({
+              top: document.documentElement.scrollHeight,
+              behavior: "smooth",
+            });
+          }}
+          className="scroll-button"
+          aria-label="一番下へスクロール"
+        >
+          ⬇️
+        </button>
+      </p>
 
       {/* 画面サイズ情報表示 */}
       <div className="screen-info">
         <p>
           <strong>モバイル表示:</strong>{" "}
-          <span data-testid="is-mobile">{isMobile ? "はい" : "いいえ"}</span>
+          <span>{isMobile ? "はい" : "いいえ"}</span>
         </p>
       </div>
 
@@ -119,7 +121,7 @@ export const SampleForm = ({ userId, onError }: UserProfileFormProps) => {
       )}
 
       <div className="user-fetch-section">
-        <h3>ユーザー情報取得 (GET API)</h3>
+        <h3>ユーザー情報取得</h3>
 
         {user && (
           <div className="user-info">
@@ -140,7 +142,7 @@ export const SampleForm = ({ userId, onError }: UserProfileFormProps) => {
       </div>
 
       <div className="user-form-section">
-        <h3>ユーザー情報編集・保存 (POST API)</h3>
+        <h3>ユーザー情報編集・保存</h3>
         <form
           onSubmit={(e) => {
             e.preventDefault();
