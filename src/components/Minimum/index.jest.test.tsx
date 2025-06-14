@@ -11,6 +11,6 @@ describe("Sample", () => {
     render(<Sample />)
 
     // @ts-expect-error - toBeVisible is not a valid matcher
-    expect(screen.getByText("Sample")).toBeVisible()
+    expect(screen.getByText("サンプルテキスト")).toBeVisible()
   })
 })

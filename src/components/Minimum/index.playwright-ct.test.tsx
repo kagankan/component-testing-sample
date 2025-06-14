@@ -3,5 +3,5 @@ import { Sample } from '.';
 
 test('should work', async ({ mount }) => {
   const component = await mount(<Sample />);
-  await expect(component.getByText('Sample')).toBeVisible();
+  await expect(component.getByText('サンプルテキスト')).toBeVisible();
 });

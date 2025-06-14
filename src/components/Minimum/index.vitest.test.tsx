@@ -10,6 +10,6 @@ describe("Sample", () => {
   it("should render", () => {
     render(<Sample />)
 
-    expect(screen.getByText("Sample")).toBeVisible()
+    expect(screen.getByText("サンプルテキスト")).toBeVisible()
   })
 })

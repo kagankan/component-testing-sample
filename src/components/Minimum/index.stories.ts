@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import { expect } from "storybook/test";
 
 import { Sample } from ".";
 
@@ -11,4 +12,7 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   args: {},
+  play: async ({ canvas }) => {
+    await expect(canvas.getByText("サンプルテキスト")).toBeVisible();
+  },
 };

@@ -1,3 +1,3 @@
 export const Sample = () => {
-  return <div>Sample</div>;
+  return <p>サンプルテキスト</p>;
 };
