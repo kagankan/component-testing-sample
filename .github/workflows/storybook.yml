@@ -23,8 +23,5 @@ jobs:
       - name: Install Playwright browsers for Storybook
         run: npx playwright install --with-deps chromium
 
-      - name: Build Storybook
-        run: yarn build-storybook --quiet
-
       - name: Run Storybook tests
         run: yarn test:storybook
