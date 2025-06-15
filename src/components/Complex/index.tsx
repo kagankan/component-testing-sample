@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import "./style.css";
 import { useMobile } from "./hooks";
-import { formTitle } from "./sample-module";
+
 interface User {
   id: number;
   name: string;
@@ -96,7 +96,7 @@ export const SampleForm = ({ userId, onError }: UserProfileFormProps) => {
         isMobile ? "mobile-layout" : "desktop-layout"
       }`}
     >
-      <h2>{formTitle}</h2>
+      <h2>ユーザープロフィール管理</h2>
 
       <p className="scroll-controls">
         <button
