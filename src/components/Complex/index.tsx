@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import "./style.css";
 import { useMobile } from "./hooks";
-import { formTitle } from "./sample-module";
+import { formTitle, someFunction } from "./sample-module";
 interface User {
   id: number;
   name: string;
@@ -30,6 +30,9 @@ export const SampleForm = ({ userId, onError }: UserProfileFormProps) => {
   // 初期データの取得
   useEffect(() => {
     let isMounted = true;
+
+  const result=  someFunction();
+    console.log(result);
 
     void (async () => {
       try {
