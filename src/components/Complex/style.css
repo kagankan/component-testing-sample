@@ -69,29 +69,6 @@
   max-width: 120px;
 }
 
-.refresh-button {
-  background-color: #1ea7fd;
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 14px;
-  font-weight: 500;
-  transition: background-color 0.2s ease;
-  margin-top: 10px;
-  max-width: 120px;
-}
-
-.refresh-button:hover:not(:disabled) {
-  background-color: #0d8ae6;
-}
-
-.refresh-button:disabled {
-  background-color: #ccc;
-  cursor: not-allowed;
-}
-
 .user-info {
   background-color: white;
   padding: 15px;
@@ -158,79 +135,71 @@
   }
 }
 
-/* スクロール情報表示 */
-.scroll-info {
-  background-color: #e3f2fd;
-  padding: 15px;
-  border-radius: 6px;
-  border: 1px solid #2196f3;
-  margin-bottom: 20px;
-  font-size: 14px;
-}
-
-.scroll-info p {
-  margin: 5px 0;
-}
-
-.scroll-info strong {
-  color: #1976d2;
-}
-
 /* スクロール操作ボタン */
 .scroll-controls {
   display: flex;
   gap: 10px;
   margin-bottom: 30px;
   flex-wrap: wrap;
+  justify-content: center;
 }
 
 .scroll-button {
-  background-color: #ff9800;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
   border: none;
-  padding: 10px 16px;
-  border-radius: 20px;
+  padding: 12px 24px;
+  border-radius: 25px;
   cursor: pointer;
   font-size: 14px;
-  font-weight: 500;
-  transition: all 0.2s ease;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: 8px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+  text-transform: uppercase;
+  min-width: 140px;
+  justify-content: center;
+}
+
+.scroll-button::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
+  transition: left 0.5s;
 }
 
 .scroll-button:hover {
-  background-color: #f57c00;
-  transform: translateY(-1px);
-  box-shadow: 0 2px 8px rgba(255, 152, 0, 0.3);
+  background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.6);
+}
+
+.scroll-button:hover::before {
+  left: 100%;
 }
 
 .scroll-button:active {
-  transform: translateY(0);
+  transform: translateY(-1px) scale(1.02);
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
 }
 
-.scroll-to-top {
-  background-color: #4caf50;
-}
-
-.scroll-to-top:hover {
-  background-color: #388e3c;
-}
-
-.scroll-to-form {
-  background-color: #2196f3;
-}
-
-.scroll-to-form:hover {
-  background-color: #1976d2;
-}
-
-.scroll-to-bottom {
-  background-color: #9c27b0;
-}
-
-.scroll-to-bottom:hover {
-  background-color: #7b1fa2;
+.scroll-button:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.3);
 }
 
 /* 長いコンテンツセクション */
@@ -299,10 +268,6 @@
   }
 }
 
-.scroll-info {
-  animation: fadeInUp 0.5s ease;
-}
-
 .scroll-controls {
   animation: fadeInUp 0.5s ease 0.1s both;
 }
@@ -311,15 +276,6 @@
 @media (max-width: 768px) {
   .scroll-controls {
     justify-content: center;
-  }
-
-  .scroll-button {
-    flex: 1;
-    min-width: 100px;
-  }
-
-  .scroll-info {
-    text-align: center;
   }
 
   .dummy-content-item {

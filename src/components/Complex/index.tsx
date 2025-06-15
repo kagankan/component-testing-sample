@@ -1,8 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import "./style.css";
 import { useMobile } from "./hooks";
-import { formTitle } from "./module";
-
+import { formTitle } from "./sample-module";
 interface User {
   id: number;
   name: string;
@@ -14,9 +13,9 @@ interface UserProfileFormProps {
   userId: number;
 
   /**
-   * エラー発生時のコールバック
+   * API エラー発生時のコールバック
    */
-  onError: (error: string) => void;
+  onError?: (error: string) => void;
 }
 
 export const SampleForm = ({ userId, onError }: UserProfileFormProps) => {
@@ -35,10 +34,15 @@ export const SampleForm = ({ userId, onError }: UserProfileFormProps) => {
     void (async () => {
       try {
         const response = await fetch(`/api/users/${userId}`);
-        const fetchedUser = await response.json();
 
         if (isMounted) {
-          setUser(fetchedUser);
+          if (response.ok) {
+            const fetchedUser = await response.json();
+            setUser(fetchedUser);
+          } else {
+            const errorMessage = await response.json();
+            onError?.(errorMessage.message);
+          }
         }
       } catch (error) {
         if (isMounted) {
@@ -47,7 +51,7 @@ export const SampleForm = ({ userId, onError }: UserProfileFormProps) => {
             error instanceof Error
               ? error.message
               : "ユーザー情報の取得に失敗しました";
-          window.alert(errorMessage);
+          onError?.(errorMessage);
         }
       }
     })();
@@ -55,18 +59,24 @@ export const SampleForm = ({ userId, onError }: UserProfileFormProps) => {
     return () => {
       isMounted = false;
     };
-  }, [userId]);
+  }, [onError, userId]);
 
   // ユーザー情報を保存
   const updateUser = useCallback(
-    async (userData: User) => {
+    async ({ id, ...userData }: User) => {
       try {
         setSaving(true);
-        const response = await fetch(`/api/users/${userData.id}`, {
+        const response = await fetch(`/api/users/${id}`, {
           method: "PUT",
           body: JSON.stringify(userData),
         });
-        await response.json();
+        if (response.ok) {
+          const fetchedUser = await response.json();
+          setUser(fetchedUser);
+        } else {
+          const errorMessage = await response.json();
+          onError?.(errorMessage.message);
+        }
       } catch (error) {
         const errorMessage =
           error instanceof Error
@@ -103,15 +113,6 @@ export const SampleForm = ({ userId, onError }: UserProfileFormProps) => {
         </button>
       </p>
 
-      {/* 画面サイズ情報表示 */}
-      <div className="screen-info">
-        <p>
-          <strong>モバイル表示:</strong>{" "}
-          <span>{isMobile ? "はい" : "いいえ"}</span>
-        </p>
-      </div>
-
-      {/* モバイル専用ハンバーガーメニューボタン */}
       {isMobile && (
         <div className="mobile-only">
           これは画面が狭いときだけ表示されるはずだよ
@@ -121,29 +122,36 @@ export const SampleForm = ({ userId, onError }: UserProfileFormProps) => {
       <div className="user-fetch-section">
         <h3>ユーザー情報取得</h3>
 
-        {user && (
-          <div className="user-info">
-            <p>
-              <strong>ID:</strong> <span>{user.id}</span>
-            </p>
-            <p>
-              <strong>名前:</strong> <span>{user.name}</span>
-            </p>
-            <p>
-              <strong>メール:</strong> <span>{user.email}</span>
-            </p>
-            <p>
-              <strong>役割:</strong> <span>{user.role}</span>
-            </p>
-          </div>
-        )}
+        <div className="user-info">
+          <p>
+            <strong>ID:</strong> <span>{user?.id}</span>
+          </p>
+          <p>
+            <strong>名前:</strong> <span>{user?.name}</span>
+          </p>
+          <p>
+            <strong>メール:</strong> <span>{user?.email}</span>
+          </p>
+          <p>
+            <strong>役割:</strong> <span>{user?.role}</span>
+          </p>
+        </div>
       </div>
 
       <div className="user-form-section">
         <h3>ユーザー情報更新</h3>
         <form
+          noValidate
           onSubmit={(e) => {
             e.preventDefault();
+            if (!name) {
+              window.alert("名前を入力してください");
+              return;
+            }
+            if (!email) {
+              window.alert("メールアドレスを入力してください");
+              return;
+            }
             updateUser({ id: userId, name, email, role });
           }}
         >
@@ -178,18 +186,13 @@ export const SampleForm = ({ userId, onError }: UserProfileFormProps) => {
               value={role}
               onChange={(e) => setRole(e.target.value)}
             >
-              <option value="user">ユーザー</option>
+              <option value="viewer">閲覧者</option>
               <option value="admin">管理者</option>
-              <option value="moderator">モデレーター</option>
             </select>
           </div>
 
           <div className="button-group">
-            <button
-              type="submit"
-              disabled={saving || !name || !email}
-              className="save-button"
-            >
+            <button type="submit" disabled={saving} className="save-button">
               {saving ? "保存中..." : "保存"}
             </button>
           </div>

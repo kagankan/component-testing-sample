@@ -1,13 +1,19 @@
-import { describe, expect, it, jest, beforeAll, afterEach, afterAll } from "@jest/globals"
-import { render, screen, waitFor } from "@testing-library/react"
-import userEvent from "@testing-library/user-event"
-import "@testing-library/jest-dom"
-import { http, HttpResponse } from "msw"
-import { setupServer } from "msw/node"
-import { SampleForm } from "."
-
-
-
+import {
+  describe,
+  expect,
+  it,
+  jest,
+  beforeAll,
+  afterEach,
+  afterAll,
+  beforeEach,
+} from "@jest/globals";
+import { render, screen, waitFor } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import "@testing-library/jest-dom";
+import { http, HttpResponse } from "msw";
+import { setupServer } from "msw/node";
+import { SampleForm } from ".";
 
 // Node 上で実行するため、ブラウザのみに存在する関数はモックする
 // @ts-expect-error - toBeVisible is not a valid matcher
@@ -15,318 +21,161 @@ global.ResizeObserver = jest.fn().mockImplementation(() => ({
   observe: jest.fn(),
   unobserve: jest.fn(),
   disconnect: jest.fn(),
-}))
+}));
 
-window.alert = jest.fn()
-
+window.alert = jest.fn();
 
 // MSW サーバーのセットアップ
-const server = setupServer()
+const server = setupServer();
 
 beforeAll(() => {
-  server.listen()
-})
+  server.listen();
+});
+
+const getCallMock = jest.fn();
+const putCallMock = jest.fn();
+
+beforeEach(() => {
+  // ✅️ MSW で API モックが可能
+  server.use(
+    http.get("/api/users/1", () => {
+      // ✅️ モック関数を使うことで呼び出し履歴をテストできる
+      // https://zenn.dev/takepepe/articles/jest-msw-mocking
+      getCallMock();
+      return HttpResponse.json({
+        id: 1,
+        name: "Sample User",
+        email: "sample.user@example.com",
+        role: "viewer",
+      });
+    }),
+    http.put("/api/users/1", async ({ request }) => {
+      const body = await request.json();
+      putCallMock(body);
+      return HttpResponse.json(body);
+    })
+  );
+});
 
 afterEach(() => {
-  server.resetHandlers()
-})
+  server.resetHandlers();
+});
 
 afterAll(() => {
-  server.close()
-})
+  server.close();
+});
 
-
-
-describe("SampleForm", () => {
-  it("フォームの操作とAPI呼び出しのテスト", async () => {
-    const getCallMock = jest.fn()
-    const putCallMock = jest.fn()
-
-    // APIハンドラーの設定
-    server.use(
-      http.get("/api/users/1", () => {
-        getCallMock()
-        return HttpResponse.json({
-          id: 1,
-          name: "John Doe",
-          email: "john.doe@example.com",
-          role: "admin",
-        })
-      }),
-      http.put("/api/users/1", async ({ request }) => {
-        const body = await request.json()
-        putCallMock(body)
-        return HttpResponse.json(body)
-      })
-    )
-
-    const onErrorMock = jest.fn()
-    const user = userEvent.setup()
-
-    render(<SampleForm userId={1} onError={onErrorMock} />)
-
-    // ユーザー情報が取得されて表示されることを確認
-    await waitFor(
-      () => {
-        expect(screen.getByText("John Doe")).toBeTruthy()
-      },
-      { timeout: 5000 }
-    )
-
-    // GETリクエストが呼び出されたことを確認
-    expect(getCallMock).toHaveBeenCalled()
-    expect(onErrorMock).not.toHaveBeenCalled()
-
-    // フォームの操作
-    const nameInput = screen.getByRole("textbox", { name: "名前" })
-    const emailInput = screen.getByRole("textbox", { name: "メールアドレス" })
-    const roleSelect = screen.getByRole("combobox", { name: "役割" })
-    const saveButton = screen.getByRole("button", { name: "保存" })
-
-    await user.clear(nameInput)
-    await user.type(nameInput, "Taro")
-
-    await user.clear(emailInput)
-    await user.type(emailInput, "taro@example.com")
-
-    await user.selectOptions(roleSelect, "admin")
-    await user.click(saveButton)
-
-    // 少し待機してPUTリクエストが完了するのを確認
-    await waitFor(
-      () => {
-        expect(putCallMock).toHaveBeenCalledWith({
-          id: 1,
-          name: "Taro",
-          email: "taro@example.com",
-          role: "admin",
-        })
-      },
-      { timeout: 2000 }
-    )
-  })
-
-  it("初期表示でユーザー情報が表示される", async () => {
-    server.use(
-      http.get("/api/users/1", () => {
-        return HttpResponse.json({
-          id: 1,
-          name: "Jane Smith",
-          email: "jane.smith@example.com",
-          role: "user",
-        })
-      })
-    )
-
-    render(<SampleForm userId={1} onError={() => {}} />)
+describe("APIモック・モック関数", () => {
+  it("データ取得と表示", async () => {
+    render(<SampleForm userId={1} />);
 
     // ユーザー情報が表示されることを確認
-    await waitFor(
-      () => {
-        // @ts-expect-error - 動作には影響ないため無視
-        expect(screen.getByText("Jane Smith")).toBeVisible()
-      },
-      { timeout: 5000 }
-    )
-
     // @ts-expect-error - 動作には影響ないため無視
-    expect(screen.getByText("jane.smith@example.com")).toBeVisible()
+    expect(await screen.findByText("Sample User")).toBeVisible();
     // @ts-expect-error - 動作には影響ないため無視
-    expect(screen.getByText("user")).toBeVisible()
-  })
+    expect(await screen.findByText("sample.user@example.com")).toBeVisible();
+    // @ts-expect-error - 動作には影響ないため無視
+    expect(await screen.findByText("viewer")).toBeVisible();
 
-  it("フォームの必須項目が空の場合、保存ボタンが無効になる", async () => {
+    // GETリクエストが呼び出されたことを確認
+    expect(getCallMock).toHaveBeenCalled();
+  });
+
+  it("APIモックの上書き", async () => {
     server.use(
+      // ✅️ テストケースごとにモックを設定することができる
       http.get("/api/users/1", () => {
-        return HttpResponse.json({
-          id: 1,
-          name: "Test User",
-          email: "test@example.com",
-          role: "user",
-        })
+        return HttpResponse.json(
+          { message: "見せられないよ！" },
+          { status: 403 }
+        );
       })
-    )
+    );
 
-    const user = userEvent.setup()
-    render(<SampleForm userId={1} onError={() => {}} />)
+    const onErrorMock = jest.fn();
 
-    // ユーザー情報が表示されるまで待機
-    await waitFor(
-      () => {
-        // @ts-expect-error - 動作には影響ないため無視
-        expect(screen.getByText("Test User")).toBeVisible()
-      },
-      { timeout: 5000 }
-    )
+    render(<SampleForm userId={1} onError={onErrorMock} />);
 
-    const nameInput = screen.getByRole("textbox", { name: "名前" })
-    const saveButton = screen.getByRole("button", { name: "保存" })
+    await waitFor(() => {
+      expect(onErrorMock).toHaveBeenCalledWith("見せられないよ！");
+    });
+  });
 
-    // 名前フィールドをクリアすると保存ボタンが無効になることを確認
-    await user.clear(nameInput)
+  it("フォームの操作とデータ更新", async () => {
+    const onErrorMock = jest.fn();
+    const user = userEvent.setup();
 
-    // @ts-expect-error - 動作には影響ないため無視
-    expect(saveButton).toBeDisabled()
-  })
+    render(<SampleForm userId={1} onError={onErrorMock} />);
 
-  it("APIエラー時の動作確認", async () => {
-    server.use(
-      http.get("/api/users/1", () => {
-        return HttpResponse.error()
-      })
-    )
+    // ✅️ ARIA ロールとアクセシブル名を使ってフォームの操作を実行できる
+    await user.type(screen.getByRole("textbox", { name: "名前" }), "Taro");
+    await user.type(
+      screen.getByRole("textbox", { name: "メールアドレス" }),
+      "taro@example.com"
+    );
+    await user.selectOptions(
+      screen.getByRole("combobox", { name: "役割" }),
+      "admin"
+    );
+    await user.click(screen.getByRole("button", { name: "保存" }));
 
+    // 少し待機してPUTリクエストが完了するのを確認
+    await waitFor(() => {
+      expect(putCallMock).toHaveBeenCalledWith({
+        name: "Taro",
+        email: "taro@example.com",
+        role: "admin",
+      });
+    });
+  });
+
+  it("アラートの表示", async () => {
     // window.alert をモック
-    const alertSpy = jest.spyOn(window, "alert").mockImplementation(() => {})
-    const onErrorMock = jest.fn()
+    const alertSpy = jest.spyOn(window, "alert");
+    const user = userEvent.setup();
 
-    render(<SampleForm userId={1} onError={onErrorMock} />)
+    render(<SampleForm userId={1} />);
 
-    // エラーが発生してアラートが表示されることを確認
-    await waitFor(
-      () => {
-        expect(alertSpy).toHaveBeenCalled()
-      },
-      { timeout: 2000 }
-    )
+    // 何も入力せず保存しようとする
+    await user.click(screen.getByRole("button", { name: "保存" }));
 
-    alertSpy.mockRestore()
-  })
+    expect(alertSpy).toHaveBeenCalledWith("名前を入力してください");
+  });
+});
 
-  it("保存処理でエラーが発生した場合、onErrorが呼ばれる", async () => {
-    server.use(
-      http.get("/api/users/1", () => {
-        return HttpResponse.json({
-          id: 1,
-          name: "Test User",
-          email: "test@example.com",
-          role: "user",
-        })
-      }),
-      http.put("/api/users/1", () => {
-        return HttpResponse.error()
-      })
-    )
+describe("ブラウザ固有の機能", () => {
+  describe("画面サイズ", () => {
+    it("狭いとき", async () => {
+      render(<SampleForm userId={1} />);
+      // ❌️ jsdom では実行できないため、テストが失敗する
+      // expect(
+      //   screen.queryByText("これは画面が狭いときだけ表示されるはずだよ")
+      //   // @ts-expect-error - 動作には影響ないため無視
+      // ).toBeVisible();
+    });
 
-    const onErrorMock = jest.fn()
-    const user = userEvent.setup()
-
-    render(<SampleForm userId={1} onError={onErrorMock} />)
-
-    // ユーザー情報が表示されるまで待機
-    await waitFor(
-      () => {
+    it("広いとき", async () => {
+      render(<SampleForm userId={1} />);
+      expect(
+        screen.queryByText("これは画面が狭いときだけ表示されるはずだよ")
         // @ts-expect-error - 動作には影響ないため無視
-        expect(screen.getByText("Test User")).toBeVisible()
-      },
-      { timeout: 5000 }
-    )
+      ).not.toBeInTheDocument();
+    });
+  });
 
-    // フォームに入力して保存
-    const nameInput = screen.getByRole("textbox", { name: "名前" })
-    const emailInput = screen.getByRole("textbox", { name: "メールアドレス" })
-    const saveButton = screen.getByRole("button", { name: "保存" })
+  it("スクロール", async () => {
+    render(<SampleForm userId={1} />);
 
-    await user.clear(nameInput)
-    await user.type(nameInput, "Updated Name")
-
-    await user.clear(emailInput)
-    await user.type(emailInput, "updated@example.com")
-
-    await user.click(saveButton)
-
-    // onErrorが呼ばれることを確認
-    await waitFor(
-      () => {
-        expect(onErrorMock).toHaveBeenCalled()
-      },
-      { timeout: 2000 }
-    )
-  })
-
-  it("保存中は保存ボタンが無効になり、テキストが変わる", async () => {
-    let resolveRequest: (value: unknown) => void = () => {}
-    const requestPromise = new Promise((resolve) => {
-      resolveRequest = resolve
-    })
-
-    server.use(
-      http.get("/api/users/1", () => {
-        return HttpResponse.json({
-          id: 1,
-          name: "Test User",
-          email: "test@example.com",
-          role: "user",
-        })
-      }),
-      http.put("/api/users/1", async ({ request }) => {
-        const body = await request.json()
-        // リクエストを遅延させる
-        await requestPromise
-        return HttpResponse.json(body)
-      })
-    )
-
-    const user = userEvent.setup()
-    render(<SampleForm userId={1} onError={() => {}} />)
-
-    // ユーザー情報が表示されるまで待機
-    await waitFor(
-      () => {
-        // @ts-expect-error - 動作には影響ないため無視
-        expect(screen.getByText("Test User")).toBeVisible()
-      },
-      { timeout: 5000 }
-    )
-
-    // フォームに入力
-    const nameInput = screen.getByRole("textbox", { name: "名前" })
-    const emailInput = screen.getByRole("textbox", { name: "メールアドレス" })
-
-    await user.clear(nameInput)
-    await user.type(nameInput, "Updated Name")
-
-    await user.clear(emailInput)
-    await user.type(emailInput, "updated@example.com")
-
-    // 保存ボタンをクリック
-    const saveButton = screen.getByRole("button", { name: "保存" })
-    await user.click(saveButton)
-
-    // 保存中の状態を確認
-    expect(
-      screen.getByRole("button", { name: "保存中..." })
-      // @ts-expect-error - 動作には影響ないため無視
-    ).toBeInTheDocument()
-    // @ts-expect-error - 動作には影響ないため無視
-    expect(screen.getByRole("button", { name: "保存中..." })).toBeDisabled()
-
-    // リクエストを完了させる
-    resolveRequest({
-      id: 1,
-      name: "Updated Name",
-      email: "updated@example.com",
-      role: "user",
-    })
-
-    // 保存が完了したら元の状態に戻ることを確認
-    await waitFor(
-      () => {
-        expect(
-          screen.getByRole("button", { name: "保存" })
-          // @ts-expect-error - 動作には影響ないため無視
-        ).toBeInTheDocument()
-      },
-      { timeout: 2000 }
-    )
-  })
-
-  it("スクロールボタンをクリックする", async () => {
-    render(<SampleForm userId={1} onError={() => {}} />);
-
-    const scrollButton = screen.getByRole("button", { name: "一番下へスクロール" });
+    // ✅️ window.scrollTo がモックされているので実行はできる
+    // ただし `Error: Not implemented: window.scrollTo` というエラーが出る
+    const scrollButton = screen.getByRole("button", {
+      name: "一番下へスクロール",
+    });
     await userEvent.click(scrollButton);
 
-    // expect(scrollButton).toBeDisabled();
+    await waitFor(async () => {
+      // ❌️ スクロールすることができないので、テストが失敗する
+      // await expect(screen.getByText("ここが一番下だよ")).toBeVisible();
+    });
   });
-})
+});

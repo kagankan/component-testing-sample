@@ -15,6 +15,7 @@ export default defineConfig({
       {
         test: {
           name: "jsdom",
+          environment: 'jsdom',
           include: ["**/*.vitest.test.tsx"],
           globals: true, // global: true にしないと、 testing-library/jest-dom 内部の参照が失敗する
         },
