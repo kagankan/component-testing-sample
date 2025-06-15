@@ -1,0 +1,482 @@
+/* 適当なスタイル */
+
+.user-profile-form {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: "Nunito Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.user-profile-form h2 {
+  color: #333;
+  text-align: center;
+  margin-bottom: 30px;
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.user-profile-form h3 {
+  color: #666;
+  margin-bottom: 15px;
+  font-size: 18px;
+  font-weight: 500;
+  border-bottom: 2px solid #e1e5e9;
+  padding-bottom: 5px;
+}
+
+.user-fetch-section,
+.user-form-section {
+  margin-bottom: 30px;
+  padding: 20px;
+  background-color: #f8f9fa;
+  border-radius: 6px;
+  border: 1px solid #e1e5e9;
+}
+
+.input-group {
+  margin-bottom: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.input-group label {
+  font-weight: 500;
+  color: #333;
+  font-size: 14px;
+}
+
+.input-group input,
+.input-group select {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+  transition: border-color 0.2s ease;
+}
+
+.input-group input:focus,
+.input-group select:focus {
+  outline: none;
+  border-color: #1ea7fd;
+  box-shadow: 0 0 0 2px rgba(30, 167, 253, 0.2);
+}
+
+.input-group input[type="number"] {
+  max-width: 120px;
+}
+
+.user-info {
+  background-color: white;
+  padding: 15px;
+  border-radius: 4px;
+  border: 1px solid #e1e5e9;
+  margin-top: 15px;
+}
+
+.user-info p {
+  margin: 8px 0;
+  font-size: 14px;
+}
+
+.user-info strong {
+  color: #333;
+  min-width: 60px;
+  display: inline-block;
+}
+
+.user-info span {
+  color: #666;
+}
+
+.button-group {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.save-button {
+  background-color: #28a745;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: background-color 0.2s ease;
+  flex: 1;
+}
+
+.save-button:hover:not(:disabled) {
+  background-color: #218838;
+}
+
+.save-button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+@media (max-width: 768px) {
+  .user-profile-form {
+    margin: 0 10px;
+    padding: 15px;
+  }
+
+  .button-group {
+    flex-direction: column;
+  }
+
+  .save-button {
+    flex: none;
+  }
+}
+
+/* スクロール操作ボタン */
+.scroll-controls {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 30px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.scroll-button {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 25px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+  text-transform: uppercase;
+  min-width: 140px;
+  justify-content: center;
+}
+
+.scroll-button::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
+  transition: left 0.5s;
+}
+
+.scroll-button:hover {
+  background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.6);
+}
+
+.scroll-button:hover::before {
+  left: 100%;
+}
+
+.scroll-button:active {
+  transform: translateY(-1px) scale(1.02);
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+}
+
+.scroll-button:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.3);
+}
+
+/* 長いコンテンツセクション */
+.long-content-section {
+  margin-top: 40px;
+  padding: 20px;
+  background-color: #f5f5f5;
+  border-radius: 6px;
+  border: 1px solid #e0e0e0;
+}
+
+.long-content-section h3 {
+  color: #424242;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.dummy-content-item {
+  background-color: white;
+  padding: 20px;
+  margin-bottom: 15px;
+  border-radius: 6px;
+  border: 1px solid #e0e0e0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.dummy-content-item h4 {
+  color: #333;
+  margin-bottom: 10px;
+  font-size: 16px;
+}
+
+.dummy-content-item p {
+  color: #666;
+  line-height: 1.6;
+  margin-bottom: 10px;
+}
+
+.dummy-content-item p:last-child {
+  font-size: 12px;
+  color: #999;
+  background-color: #f9f9f9;
+  padding: 8px;
+  border-radius: 4px;
+  font-family: monospace;
+}
+
+/* マーカー要素 */
+[data-testid="top-marker"],
+[data-testid="bottom-marker"] {
+  height: 1px;
+  width: 100%;
+  opacity: 0.1;
+  pointer-events: none;
+}
+
+/* アニメーション */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.scroll-controls {
+  animation: fadeInUp 0.5s ease 0.1s both;
+}
+
+/* レスポンシブ対応 */
+@media (max-width: 768px) {
+  .scroll-controls {
+    justify-content: center;
+  }
+
+  .dummy-content-item {
+    padding: 15px;
+  }
+}
+
+/* スムーズスクロール対応 */
+html {
+  scroll-behavior: smooth;
+}
+
+/* スクロールバーのカスタマイズ（Webkit系ブラウザ用） */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background-color: #f1f1f1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #c1c1c1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: #a8a8a8;
+}
+
+/* 画面サイズ情報表示 */
+.screen-info {
+  background-color: #fff3e0;
+  border: 2px solid #ff9800;
+  padding: 15px;
+  border-radius: 6px;
+  margin-bottom: 20px;
+  font-size: 14px;
+}
+
+.screen-info p {
+  margin: 5px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.screen-info strong {
+  color: #f57c00;
+  min-width: 120px;
+}
+
+/* モバイルレイアウト */
+.mobile-layout {
+  padding: 10px;
+}
+
+.desktop-layout {
+  padding: 20px;
+}
+
+/* モバイル専用クイックアクションメニュー */
+.mobile-quick-actions {
+  background-color: #e3f2fd;
+  border: 2px solid #2196f3;
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  animation: slideDown 0.3s ease;
+}
+
+.mobile-quick-actions h3 {
+  color: #1976d2;
+  margin-bottom: 15px;
+  text-align: center;
+  font-size: 16px;
+}
+
+.mobile-action-buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.mobile-action-button {
+  background-color: #2196f3;
+  color: white;
+  border: none;
+  padding: 12px 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  min-height: 50px;
+  justify-content: center;
+}
+
+.mobile-action-button:hover:not(:disabled) {
+  background-color: #1976d2;
+  transform: translateY(-1px);
+}
+
+.mobile-action-button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+/* モバイル表示情報 */
+.mobile-display-info {
+  background-color: #f3e5f5;
+  border: 2px solid #9c27b0;
+  padding: 15px;
+  border-radius: 6px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.mobile-display-info p {
+  margin: 5px 0;
+  color: #7b1fa2;
+  font-weight: 500;
+}
+
+/* デスクトップ専用要素（モバイルで非表示） */
+@media (max-width: 767px) {
+  .desktop-only {
+    display: none !important;
+  }
+
+  .user-profile-form {
+    max-width: none;
+    margin: 0;
+    box-shadow: none;
+    border-radius: 0;
+  }
+
+  .user-fetch-section,
+  .user-form-section {
+    padding: 15px;
+  }
+
+  .input-group {
+    margin-bottom: 12px;
+  }
+
+  .button-group {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .save-button {
+    width: 100%;
+    padding: 14px;
+  }
+}
+
+/* モバイル専用要素（デスクトップで非表示） */
+@media (min-width: 768px) {
+  .mobile-only {
+    display: none !important;
+  }
+
+  .mobile-quick-actions,
+  .mobile-display-info {
+    display: none !important;
+  }
+}
+
+/* アニメーション */
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+.mobile-only {
+  background-color: #f3e5f5;
+  border: 2px solid #9c27b0;
+  padding: 15px;
+  border-radius: 6px;
+  margin-bottom: 20px;
+  text-align: center;
+}
