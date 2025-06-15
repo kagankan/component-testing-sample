@@ -27,7 +27,7 @@ jobs:
         run: yarn build-storybook --quiet
 
       - name: Start Storybook server
-        run: npx http-server storybook-static --port 6006 --silent
+        run: npx http-server storybook-static --port 6006 --silent &
 
       - name: Run Storybook tests
         run: yarn test:storybook
