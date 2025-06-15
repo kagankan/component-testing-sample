@@ -1,22 +1,22 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { expect } from "storybook/test";
 import { ModuleMockSample } from ".";
-import { createMock } from 'storybook-addon-vite-mock';
-import { someFunction} from "./sample-module";
+// import { createMock } from 'storybook-addon-vite-mock';
+// import { someFunction} from "./sample-module";
 
 
 const meta = {
   component: ModuleMockSample,
   parameters: {
-    moduleMock: {
-      // ✅️ モジュールモックできる
-      // ⚠️ ただし、mswと同時に使用するとエラーになるため、このリポジトリでは無効化している
-      mock: () => {
-        const mock = createMock(someFunction);
-        mock.mockReturnValue("mocked");
-        return [mock];
-      },
-    },
+    // ✅️ モジュールモックできる
+    // ⚠️ ただし、mswと同時に使用するとエラーになるため、このリポジトリでは無効化している
+    // moduleMock: {
+    //   mock: () => {
+    //     const mock = createMock(someFunction);
+    //     mock.mockReturnValue("mocked");
+    //     return [mock];
+    //   },
+    // },
   },
 } satisfies Meta<typeof ModuleMockSample>;
 
