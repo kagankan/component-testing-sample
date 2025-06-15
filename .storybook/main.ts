@@ -5,7 +5,13 @@ const config: StorybookConfig = {
     "../src/**/*.mdx",
     "../src/**/*.stories.@(js|jsx|mjs|ts|tsx)"
   ],
-  "addons": ["@storybook/addon-vitest", "msw-storybook-addon", "storybook/viewport"],
+  "addons": [
+    "@storybook/addon-vitest",
+    "msw-storybook-addon",
+    "storybook/viewport",
+    // msw を使っているコンポーネントでエラーが発生する
+    // "storybook-addon-vite-mock",
+  ],
   "framework": {
     "name": "@storybook/react-vite",
     "options": {}

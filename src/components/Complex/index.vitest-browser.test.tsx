@@ -5,19 +5,6 @@ import { http, HttpResponse } from "msw";
 import { setupWorker } from "msw/browser";
 import { SampleForm } from ".";
 
-// モジュールモックする
-// ⚠️ vi.mockは巻き上げられることに注意
-// https://zenn.dev/you_5805/articles/vitest-mock-hoisting
-vi.mock("./sample-module", async () => {
-  const original = await vi.importActual("./sample-module");
-  console.log(original);
-  return {
-    ...original,
-    someFunction: vi.fn().mockReturnValue("hoge"),
-    };
-  });
-
-
 const worker = setupWorker();
 
 // Vitest Browser モードで MSW を使用するための設定
